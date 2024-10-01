@@ -42,6 +42,80 @@ WHERE
 
 
 
+-- 6) Получить список аэропортов (airport_name) и городов (city), в которых есть рейсы с задержкой по вылету
+SELECT DISTINCT
+    a.airport_name,
+    a.city
+FROM
+    airports a
+JOIN
+    flights f ON a.airport_code = f.departure_airport
+WHERE
+    f.actual_departure > f.scheduled_departure;
+
+
+
+-- 7) Получить список аэропортов (airport_name) и количество рейсов, вылетающих из каждого аэропорта, отсортированный по убыванию количества рейсов
+SELECT
+    a.airport_name,
+    COUNT(f.flight_id) AS flight_count
+FROM
+    airports a
+JOIN
+    flights f ON a.airport_code = f.departure_airport
+GROUP BY
+    a.airport_name
+ORDER BY
+    flight_count DESC;
+
+
+
+-- 8) Найти все рейсы, у которых запланированное время прибытия (scheduled_arrival) было изменено и новое время прибытия (actual_arrival) не совпадает с запланированным
+SELECT
+    flight_id,
+    scheduled_arrival,
+    actual_arrival
+FROM
+    flights
+WHERE
+    scheduled_arrival != actual_arrival;
+
+
+
+-- 9) Вывести код, модель самолета и места не эконом класса для самолета "Аэробус A321-200" с сортировкой по местам
+SELECT
+    a.aircraft_code,
+    a.model,
+    s.seat_no
+FROM
+    aircrafts a
+JOIN
+    seats s ON a.aircraft_code = s.aircraft_code
+WHERE
+    a.model = 'Аэробус A321-200' AND s.fare_conditions NOT LIKE 'Economy'
+ORDER BY
+    s.seat_no;
+
+
+
+-- 10) Вывести города, в которых больше 1 аэропорта (код аэропорта, аэропорт, город)
+SELECT 
+    airport_code, 
+    airport_name, 
+    city
+FROM 
+    airports
+WHERE city IN (
+    SELECT 
+        city
+    FROM 
+        airports
+    GROUP BY city
+    HAVING COUNT(*) > 1
+);
+
+
+
 -- 14) Написать DDL таблицы Customers, должны быть поля id, firstName, LastName, email, phone. Добавить ограничения на поля (constraints)
 CREATE TABLE Customers (
     id SERIAL PRIMARY KEY,
