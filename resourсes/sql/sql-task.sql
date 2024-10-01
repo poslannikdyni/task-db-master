@@ -116,6 +116,41 @@ WHERE city IN (
 
 
 
+-- 11) Найти пассажиров, у которых суммарная стоимость бронирований превышает среднюю сумму всех бронирований
+SELECT
+    passenger_id,
+    passenger_name,
+    SUM(total_amount) AS total_spent
+FROM
+    tickets
+JOIN
+    bookings ON tickets.book_ref = bookings.book_ref
+GROUP BY
+    passenger_id, passenger_name
+HAVING
+    SUM(total_amount) > (SELECT AVG(total_amount) FROM bookings);
+
+
+
+-- 13) Вывести самый дешевый и дорогой билет и стоимость (в одном результирующем ответе)
+(SELECT
+    ticket_no, amount
+FROM
+    ticket_flights
+ORDER BY
+    amount ASC
+LIMIT 1)
+UNION(
+    SELECT
+        ticket_no, amount
+    FROM
+        ticket_flights
+    ORDER BY
+        amount DESC
+LIMIT 1);
+
+
+
 -- 14) Написать DDL таблицы Customers, должны быть поля id, firstName, LastName, email, phone. Добавить ограничения на поля (constraints)
 CREATE TABLE Customers (
     id SERIAL PRIMARY KEY,
