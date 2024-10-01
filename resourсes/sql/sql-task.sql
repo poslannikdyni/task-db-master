@@ -1,3 +1,47 @@
+-- 1) Вывести к каждому самолету класс обслуживания и количество мест этого класса
+SELECT
+    a.aircraft_code,
+    s.fare_conditions,
+    COUNT(s.seat_no) AS seat_count
+FROM
+    aircrafts a
+JOIN
+    seats s ON a.aircraft_code = s.aircraft_code
+GROUP BY
+    a.aircraft_code, s.fare_conditions;
+
+
+
+-- 2) Найти 3 самых вместительных самолета (модель + кол-во мест)
+SELECT
+    a.model,
+    COUNT(s.seat_no) AS seat_count
+FROM
+    aircrafts a
+JOIN
+    seats s ON a.aircraft_code = s.aircraft_code
+GROUP BY
+    a.model
+ORDER BY
+    seat_count DESC
+LIMIT 3;
+
+
+
+-- 3) Найти все рейсы, которые задерживались более 2 часов
+SELECT
+    flight_id,
+    scheduled_departure,
+    actual_departure,
+    (actual_departure - scheduled_departure) AS delay
+FROM
+    flights
+WHERE
+    actual_departure IS NOT NULL AND
+    (actual_departure - scheduled_departure) > INTERVAL '2 hours';
+
+
+
 -- 14) Написать DDL таблицы Customers, должны быть поля id, firstName, LastName, email, phone. Добавить ограничения на поля (constraints)
 CREATE TABLE Customers (
     id SERIAL PRIMARY KEY,
