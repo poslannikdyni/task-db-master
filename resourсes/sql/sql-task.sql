@@ -42,6 +42,36 @@ WHERE
 
 
 
+-- 4) Найти последние 10 билетов, купленные в бизнес-классе (fare_conditions = 'Business'), с указанием имени пассажира и контактных данных
+SELECT t.ticket_no,
+       t.passenger_name,
+       t.contact_data
+FROM tickets t
+         JOIN ticket_flights tf ON t.ticket_no = tf.ticket_no
+         JOIN bookings b ON t.book_ref = b.book_ref
+WHERE
+    fare_conditions = 'Business'
+ORDER BY
+    book_date DESC
+LIMIT 10;
+
+
+
+-- 5) Найти все рейсы, у которых нет забронированных мест в бизнес-классе (fare_conditions = 'Business')
+SELECT
+	f.flight_no
+FROM
+	flights f
+INNER JOIN
+	ticket_flights tf ON f.flight_id = tf.flight_id
+WHERE
+	tf.fare_conditions != 'Business'
+GROUP BY
+	f.flight_no,
+	tf.fare_conditions;
+
+
+
 -- 6) Получить список аэропортов (airport_name) и городов (city), в которых есть рейсы с задержкой по вылету
 SELECT DISTINCT
     a.airport_name,
@@ -129,6 +159,22 @@ GROUP BY
     passenger_id, passenger_name
 HAVING
     SUM(total_amount) > (SELECT AVG(total_amount) FROM bookings);
+
+
+
+-- 12) Найти ближайший вылетающий рейс из Екатеринбурга в Москву, на который еще не завершилась регистрация
+SELECT flight_no
+FROM flights
+WHERE departure_airport = 'SVX'
+  AND status = 'On Time'
+  AND arrival_airport IN
+                        (SELECT
+                             airport_code
+                         FROM
+                             airports
+                         WHERE city = 'Москва')
+ORDER BY scheduled_departure ASC
+LIMIT 1;
 
 
 
