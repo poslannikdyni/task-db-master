@@ -81,7 +81,8 @@ FROM
 JOIN
     flights f ON a.airport_code = f.departure_airport
 WHERE
-    f.actual_departure > f.scheduled_departure;
+    f.actual_departure > f.scheduled_departure OR
+    f.status = 'Delayed';
 
 
 
