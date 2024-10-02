@@ -67,7 +67,7 @@ INNER JOIN
 WHERE
 	tf.fare_conditions != 'Business'
 GROUP BY
-	f.flight_no,
+	f.flight_id,
 	tf.fare_conditions;
 
 
