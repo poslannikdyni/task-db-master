@@ -94,6 +94,8 @@ FROM
     airports a
 JOIN
     flights f ON a.airport_code = f.departure_airport
+WHERE
+    f.actual_arrival IS NULL
 GROUP BY
     a.airport_name
 ORDER BY
